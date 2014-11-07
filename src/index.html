@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Angular Template</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- inject:html -->
+	<!-- any *.html files among your sources will go here as: <link rel="import" href="FILE"> -->
+	<!-- endinject -->
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"></script>
+	<!-- inject:css -->
+	<!-- any *.css files among your sources will go here as: <link rel="stylesheet" href="FILE"> -->
+	<!-- endinject -->
+</head>
+<body ng-app="angular-template">
+	<h1>Angular Template</h1>
+	<div ng-controller="helloCtrl">
+		<p>Hello {{ name }}</p>
+	</div>
+	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<script src="bower_components/angularjs/angular.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<!-- inject:js -->
+	<!-- any *.js files among your sources will go here as: <script src="FILE"></script> -->
+	<!-- endinject -->
+</body>
+</html>
