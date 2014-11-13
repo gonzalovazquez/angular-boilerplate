@@ -20,8 +20,8 @@ var gulpif = require('gulp-if');
 var argv = require('yargs').argv;
 var es = require('event-stream');
 var webserver = require('gulp-webserver');
-
-var serverAddress = 'localhost:', port = 8090;
+var size = require('gulp-filesize');
+var $ = require('gulp-load-plugins')();
 
 // Concat & Minify JS
 gulp.task('minify-js', function(){
@@ -29,7 +29,8 @@ gulp.task('minify-js', function(){
 		.pipe(concat('all-'+ pkg.version + '.min.js'))
 		.pipe(gulp.dest(files.publicScripts))
 		.pipe(gulpif(argv.production, uglify()))
-		.pipe(gulp.dest(files.publicScripts));
+		.pipe(gulp.dest(files.publicScripts))
+		.pipe(size());
 });
 
 // SASS to CSS
@@ -48,7 +49,8 @@ gulp.task('css', function () {
 	return es.concat(gulp.src(files.css), sassFiles)
 			.pipe(concat('main-' + pkg.version + '.min.css'))
 			.pipe(gulpif(argv.production, minifyCSS()))
-			.pipe(gulp.dest(files.publicStyles));
+			.pipe(gulp.dest(files.publicStyles))
+			.pipe(size());
 });
 
 //Minify Images
@@ -61,8 +63,9 @@ gulp.task('minify-img', function () {
 // Build HTML files
 gulp.task('build-html', function() {
 	gulp.src(files.index)
-		.pipe(inject(gulp.src(['./public/**/*.js','./public/**/*.css'], { read: false}), { ignorePath: files.publicDir }))
+		.pipe(inject(gulp.src(['./public/javascript/*.js','./public/css/*.css'], { read: false }), { ignorePath: 'public/' }))
 		.pipe(gulp.dest(files.publicDir))
+		.pipe(size());
 });
 
 // Lint JS
@@ -87,7 +90,7 @@ gulp.task('test', function() {
 gulp.task('test-watch', function() {
 	return gulp.src(files.test.concat(files.templates))
 		.pipe(karma({
-			configFile: 'karma.conf.js',
+			configFile: 'config/karma.conf.js',
 			action: 'watch'
 		}))
 		.on('error', function(err) {
@@ -95,7 +98,7 @@ gulp.task('test-watch', function() {
 		});
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', ['build'], function() {
 	gulp.watch(files.source + '/**', ['lint']);
 	gulp.watch([files.index], ['build-html']);
 	gulp.watch([files.scripts], ['minify-js']);
@@ -104,10 +107,10 @@ gulp.task('watch', function() {
 });
 
 //Launched web server and watches for changes
-gulp.task('webserver', ['build', 'watch'], function(next) {
+gulp.task('webserver', ['watch'], function(next) {
 	gulp.src('public')
 	.pipe(webserver({
-		livereload: true,
+		livereload: false,
 		directoryListing: false,
 		open: true
 	}));
