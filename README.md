@@ -15,6 +15,9 @@ An boilerplate for AngularJS projects.
 
 	npm install
 
+## Download the libraries needed.
+
+	bower install
 
 ## `gulpfile.js`
 
@@ -144,6 +147,12 @@ all the scripts and styles into the new index.html
 ```
 public/
 ├── images/
+│
+├── bower_components/
+│ 
+├── views/
+│ 
+├── templates/
 │ 
 ├── javascript/
 │   └── all.[version-number].min.js
