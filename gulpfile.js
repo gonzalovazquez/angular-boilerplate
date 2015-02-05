@@ -62,7 +62,7 @@ gulp.task('minify-img', function () {
 // Build HTML files
 gulp.task('build-html', function() {
 	gulp.src(files.index)
-		.pipe(inject(gulp.src(['./public/**/*.js','./public/**/*.css'], { read: false}), { ignorePath: files.publicDir }))
+		.pipe(inject(gulp.src(['./public/javascript/*.js','./public/css/*.css'], { read: false }), { ignorePath: 'public/' }))
 		.pipe(gulp.dest(files.publicDir))
 		.pipe(size());
 });
@@ -89,7 +89,7 @@ gulp.task('test', function() {
 gulp.task('test-watch', function() {
 	return gulp.src(files.test.concat(files.templates))
 		.pipe(karma({
-			configFile: 'karma.conf.js',
+			configFile: 'config/karma.conf.js',
 			action: 'watch'
 		}))
 		.on('error', function(err) {
@@ -97,7 +97,7 @@ gulp.task('test-watch', function() {
 		});
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', ['build'], function() {
 	gulp.watch(files.source + '/**', ['lint']);
 	gulp.watch([files.index], ['build-html']);
 	gulp.watch([files.scripts], ['minify-js']);
@@ -106,10 +106,10 @@ gulp.task('watch', function() {
 });
 
 //Launched web server and watches for changes
-gulp.task('webserver', ['build', 'watch'], function(next) {
+gulp.task('webserver', ['watch'], function(next) {
 	gulp.src('public')
 	.pipe(webserver({
-		livereload: true,
+		livereload: false,
 		directoryListing: false,
 		open: true
 	}));

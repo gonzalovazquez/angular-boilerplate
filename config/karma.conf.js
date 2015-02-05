@@ -1,6 +1,6 @@
 module.exports = function(config) {
 	config.set({
-		basePath: '../..',
+		basePath: '../',
 		frameworks: ['jasmine'],
 		preprocessors: {'src/templates/*.html': 'ng-html2js'},
 		reporters: ['progress'],
