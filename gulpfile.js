@@ -20,8 +20,7 @@ var gulpif = require('gulp-if');
 var argv = require('yargs').argv;
 var es = require('event-stream');
 var webserver = require('gulp-webserver');
-
-var serverAddress = 'localhost:', port = 8090;
+var size = require('gulp-filesize');
 
 // Concat & Minify JS
 gulp.task('minify-js', function(){
@@ -29,7 +28,8 @@ gulp.task('minify-js', function(){
 		.pipe(concat('all-'+ pkg.version + '.min.js'))
 		.pipe(gulp.dest(files.publicScripts))
 		.pipe(gulpif(argv.production, uglify()))
-		.pipe(gulp.dest(files.publicScripts));
+		.pipe(gulp.dest(files.publicScripts))
+		.pipe(size());
 });
 
 // SASS to CSS
@@ -48,7 +48,8 @@ gulp.task('css', function () {
 	return es.concat(gulp.src(files.css), sassFiles)
 			.pipe(concat('main-' + pkg.version + '.min.css'))
 			.pipe(gulpif(argv.production, minifyCSS()))
-			.pipe(gulp.dest(files.publicStyles));
+			.pipe(gulp.dest(files.publicStyles))
+			.pipe(size());
 });
 
 //Minify Images
@@ -63,6 +64,7 @@ gulp.task('build-html', function() {
 	gulp.src(files.index)
 		.pipe(inject(gulp.src(['./public/**/*.js','./public/**/*.css'], { read: false}), { ignorePath: files.publicDir }))
 		.pipe(gulp.dest(files.publicDir))
+		.pipe(size());
 });
 
 // Lint JS
