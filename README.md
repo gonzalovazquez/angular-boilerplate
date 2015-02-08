@@ -21,103 +21,33 @@ An boilerplate for AngularJS projects.
 
 ## `gulpfile.js`
 
-This file is just a quick sample to give you a taste of what Nyan can do.
+[Nyan](https://github.com/gonzalovazquez/nyan) is the gulpfile included with this boilerplate.
+For more information you can visit the repository or bring up the help.
 
-```javascript
+    gulp help
 
-// Concat & Minify JS
-gulp.task('minify-js', function(){
-	return gulp.src(paths.scripts.src)
-		.pipe(concat('all-'+ pkg.version + '.min.js'))
-		.pipe(gulp.dest(paths.scripts.dest))
-		.pipe(uglify())
-		.pipe(gulp.dest(paths.scripts.dest));
-});
+```
+Usage
+  gulp [task]
 
-// SASS to CSS
-gulp.task('sass', function () {
-	return gulp.src(paths.styles.src)
-	.pipe(sass({
-			onError: function (error) {
-			gutil.log(gutil.colors.red(error));
-			gutil.beep();
-		},
-		onSuccess: function () {
-			gutil.log(gutil.colors.green('Sass styles compiled successfully.'));
-		}
-	}))
-	.pipe(concat('main-' + pkg.version + '.min.css'))
-	.pipe(minifyCSS())
-	.pipe(gulp.dest(paths.styles.dest))
-});
-
-// Minify Images
-gulp.task('minify-img', function () {
-	gulp.src(paths.images.src)
-		.pipe(imagemin())
-		.pipe(gulp.dest(paths.images.dest));
-});
-
-// Build HTML files
-gulp.task('build-html', function() {
-	gulp.src([paths.scripts.dest + '/*.js', paths.styles.dest + '/*.css'], {read: false})
-		.pipe(inject(paths.public.index, {ignorePath: paths.public.dest}))
-		.pipe(gulp.dest(paths.public.dest))
-});
-
-// Lint JS
-gulp.task("lint", function() {
-	gulp.src([paths.scripts.src, '!'+ paths.scripts.vendor])
-		.pipe(jshint())
-		.pipe(jshint.reporter(stylish));
-});
-
-// Test
-gulp.task('test-watch', function() {
-	return gulp.src(paths.test.src)
-		.pipe(karma({
-			configFile: 'karma.conf.js',
-			action: 'watch'
-		}))
-		.on('error', function(err) {
-			throw err;
-		});
-});
-
-// Watches changes
-gulp.task('watch', function() {
-	gulp.watch(files.source + '/**', ['lint']);
-	gulp.watch([files.index], ['build-html']);
-	gulp.watch([files.scripts], ['minify-js']);
-	gulp.watch([files.sass], ['css']);
-	gulp.watch([files.css], ['css']);
-});
-
-// Builds
-gulp.task('build', function(callback) {
-	sequence(
-		'clean',
-		['minify-js','sass'],
-		'build-html',
-		callback);
-});
-
-//Launch Server
-gulp.task('webserver', ['build', 'watch'], function(next) {
-	gulp.src('public')
-	.pipe(webserver({
-		livereload: true,
-		directoryListing: false,
-		open: true
-	}));
-});
-
-// Clean build folder
-gulp.task('clean', function () {
-	return gulp.src(paths.public.dest, {read: false})
-		.pipe(clean());
-});
-
+Available tasks
+  bower_components  Copies bower_components to public
+  build             Builds projects for distribution
+  build-html        Dynamically injects javascript and css files
+  clean             Deletes existing public directory
+  css               Compliles sass to css
+  default           Builds project
+  e2e               Runs end to end tests
+  help              Display this help text.
+  lint              Lints javascript
+  minify-img        Minifies images
+  minify-js         Minifies all javascript
+  templates         Copies templates to public
+  test              Runs unit tests
+  test-watch        Unit tests with watch
+  views             Copies views to public
+  watch             Watches and builds for changes
+  webserver         Launches web server
 ```
 
 ###Folder structure

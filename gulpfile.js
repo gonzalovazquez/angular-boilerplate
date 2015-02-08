@@ -22,10 +22,11 @@ var es = require('event-stream');
 var webserver = require('gulp-webserver');
 var size = require('gulp-filesize');
 var protractor = require("gulp-protractor").protractor;
+var gulp = require('gulp-help')(require('gulp'));
 var stream;
 
 // Concat & Minify JS
-gulp.task('minify-js', function(){
+gulp.task('minify-js','Minifies all javascript', function(){
 	return gulp.src([files.vendor, files.scripts])
 		.pipe(concat('all-'+ pkg.version + '.min.js'))
 		.pipe(gulp.dest(files.publicScripts))
@@ -35,7 +36,7 @@ gulp.task('minify-js', function(){
 });
 
 // SASS to CSS
-gulp.task('css', function () {
+gulp.task('css','Compliles sass to css', function () {
 	var sassFiles = gulp.src(files.sass)
 	.pipe(sass({
 			onError: function (error) {
@@ -55,14 +56,14 @@ gulp.task('css', function () {
 });
 
 //Minify Images
-gulp.task('minify-img', function () {
+gulp.task('minify-img','Minifies images', function () {
 	gulp.src(files.images)
 		.pipe(imagemin())
 		.pipe(gulp.dest(files.publicImage));
 });
 
 // Build HTML files
-gulp.task('build-html', function() {
+gulp.task('build-html', 'Dynamically injects javascript and css files', function() {
 	gulp.src(files.index)
 		.pipe(inject(gulp.src(['./public/javascript/*.js','./public/css/*.css'], { read: false }), { ignorePath: 'public/' }))
 		.pipe(gulp.dest(files.publicDir))
@@ -70,14 +71,14 @@ gulp.task('build-html', function() {
 });
 
 // Lint JS
-gulp.task("lint", function() {
+gulp.task("lint", 'Lints javascript', function() {
 	gulp.src([files.scripts, '!'+ files.vendor])
 		.pipe(jshint())
 		.pipe(jshint.reporter(stylish));
 });
 
 //Test
-gulp.task('test', function() {
+gulp.task('test', 'Runs unit tests', function() {
 	return gulp.src(files.test.concat(files.templates))
 		.pipe(karma({
 			configFile: 'config/karma.conf.js',
@@ -89,7 +90,7 @@ gulp.task('test', function() {
 });
 
 //End to end tests
-gulp.task('e2e', function(cb) {
+gulp.task('e2e','Runs end to end tests', ['build'], function(cb) {
 	stream = gulp.src('public')
 		.pipe(webserver({
 			livereload: false,
@@ -113,7 +114,7 @@ gulp.task('e2e', function(cb) {
 	});      
 });
 
-gulp.task('test-watch', function() {
+gulp.task('test-watch','Unit tests with watch', function() {
 	return gulp.src(files.test.concat(files.templates))
 		.pipe(karma({
 			configFile: 'config/karma.conf.js',
@@ -124,7 +125,7 @@ gulp.task('test-watch', function() {
 		});
 });
 
-gulp.task('watch', ['build'], function() {
+gulp.task('watch', 'Watches and builds for changes', ['build'], function() {
 	gulp.watch(files.source + '/**', ['lint']);
 	gulp.watch([files.index], ['build-html']);
 	gulp.watch([files.scripts], ['minify-js']);
@@ -133,7 +134,7 @@ gulp.task('watch', ['build'], function() {
 });
 
 //Launched web server and watches for changes
-gulp.task('webserver', ['watch'], function(next) {
+gulp.task('webserver', 'Launches web server',['watch'], function(next) {
 	gulp.src('public')
 	.pipe(webserver({
 		livereload: false,
@@ -143,25 +144,25 @@ gulp.task('webserver', ['watch'], function(next) {
 });
 
 //Move bower_components to public
-gulp.task('bower_components', function(){
+gulp.task('bower_components', 'Copies bower_components to public', function(){
 	gulp.src(files.libs, { base: './' })
 		.pipe(gulp.dest(files.publicDir));
 });
 
 //Move views to public folder
-gulp.task('views', function(){
+gulp.task('views', 'Copies views to public', function(){
 	return gulp.src(files.views)
 		.pipe(gulp.dest('public/views'));
 });
 
 //Move templates to public folder
-gulp.task('templates', function(){
+gulp.task('templates', 'Copies templates to public', function(){
 	return gulp.src(files.templates)
 		.pipe(gulp.dest('public/templates'));
 });
 
 //Build
-gulp.task('build', function(callback) {
+gulp.task('build', 'Builds projects for distribution', function(callback) {
 	sequence(
 		'clean',
 		['minify-js','css'],
@@ -173,10 +174,10 @@ gulp.task('build', function(callback) {
 });
 
 // Clean build folder
-gulp.task('clean', function () {
+gulp.task('clean', 'Deletes existing public directory', function () {
 	return gulp.src(files.publicDir, {read: false})
 		.pipe(clean());
 });
 
 // Default
-gulp.task('default', ['build']);
+gulp.task('default', 'Builds project',['build']);
