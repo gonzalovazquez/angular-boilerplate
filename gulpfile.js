@@ -21,6 +21,8 @@ var argv = require('yargs').argv;
 var es = require('event-stream');
 var webserver = require('gulp-webserver');
 var size = require('gulp-filesize');
+var protractor = require("gulp-protractor").protractor;
+var stream = gulp.src('public').pipe(webserver());
 
 // Concat & Minify JS
 gulp.task('minify-js', function(){
@@ -84,6 +86,23 @@ gulp.task('test', function() {
 		.on('error', function(err) {
 			throw err;
 		});
+});
+
+gulp.task('e2e', function(cb) {
+	gulp.src('public')
+		.pipe(webserver({
+		livereload: false,
+		directoryListing: false,
+		open: true
+	}));
+    gulp.src(['test/e2e/**.spec.js'])
+    	.pipe(protractor({
+        	configFile: 'config/protractor.conf.js',
+        	args: ['--baseUrl', 'http://localhost:8000']
+    })).on('error', function(e) {
+        console.log(e);
+        //stream.emit('kill');
+    }).on('end', cb);        
 });
 
 gulp.task('test-watch', function() {
